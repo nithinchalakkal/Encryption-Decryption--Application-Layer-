@@ -1,0 +1,4 @@
+ static String key = "Nithin";	
+ 
+ // need to add KSoap-2 library to access method (Base64)
+ 
