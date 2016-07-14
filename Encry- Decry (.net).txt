@@ -1,0 +1,29 @@
+Private Shared key As [String] = "Nithin"
+
+
+    Public Function encrypt(stringToEncrypt As [String]) As String
+        Dim des As TripleDES = CreateDES(key)
+        Dim ct As ICryptoTransform = des.CreateEncryptor()
+        Dim input As Byte() = Encoding.Unicode.GetBytes(stringToEncrypt)
+        Dim output As Byte() = ct.TransformFinalBlock(input, 0, input.Length)
+        'return output;
+        Return Convert.ToBase64String(output)
+    End Function
+
+
+    Public Function decrypt(encryptedString As String) As [String]
+        Dim input As Byte() = Convert.FromBase64String(encryptedString)
+        Dim des As TripleDES = CreateDES(key)
+        Dim ct As ICryptoTransform = des.CreateDecryptor()
+        Dim output As Byte() = ct.TransformFinalBlock(input, 0, input.Length)
+        Return Encoding.Unicode.GetString(output)
+    End Function
+
+
+    Public Function CreateDES(key As String) As TripleDES
+        Dim md5 As MD5 = New MD5CryptoServiceProvider()
+        Dim des As TripleDES = New TripleDESCryptoServiceProvider()
+        des.Key = md5.ComputeHash(Encoding.Unicode.GetBytes(key))
+        des.IV = New Byte(des.BlockSize / 8 - 1) {}
+        Return des
+    End Function
